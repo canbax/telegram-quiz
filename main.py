@@ -6,7 +6,7 @@ QUESTION_LINE_LIMIT = 40
 
 # screen size dependent constants
 MAIN_INP_POS = pyautogui.Point(1515, 1018)
-CREATE_QUESTION_BTN = pyautogui.Point(2055, 976)
+CREATE_QUESTION_BTN = pyautogui.Point(1576, 796)
 QUESTION_OPTION_HEIGHT = 40
 QUESTION_LINE_HEIGHT = 10
 

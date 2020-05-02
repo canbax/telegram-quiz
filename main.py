@@ -62,8 +62,8 @@ def add_eba_question(question_str, h):
         pyautogui.press('enter')
 
     click_2_show_answer()
-    x,y,n = find_imgs(h)
-    copy_solution_url(x,y)
+    x, y, n = find_imgs(h)
+    copy_solution_url(x, y)
 
     add_expo_to_the_question()
 
@@ -178,9 +178,10 @@ def generate_the_question():
 def click_2_show_answer():
     pyautogui.click(785, 1367)
     pyautogui.sleep(SLEEP_DUR)
+    pyautogui.sleep(SLEEP_DUR)
 
 
-def copy_solution_url(x,y):
+def copy_solution_url(x, y):
     # clear dev tools network tab
     pyautogui.click(1089, 153)
     pyautogui.sleep(SLEEP_DUR)
@@ -202,7 +203,7 @@ def copy_solution_url(x,y):
     pyautogui.sleep(SLEEP_DUR)
 
 
-def template_matching(img:np.array, tmp:Image):
+def template_matching(img: np.array, tmp: Image):
     """ img is the big image, tmp is the template image. Both
     If founded return x,y coordinates of the center of tmp inside img, otherwise return -1,-1"""
     tmp = get_bounding_box(tmp, 0)
@@ -210,10 +211,10 @@ def template_matching(img:np.array, tmp:Image):
     m2, n2, _ = tmp.shape
 
     # search from bottom
-    for i in reversed(range(m-m2)):
-        for j in range(n-n2):
+    for i in reversed(range(m-m2+1)):
+        for j in range(n-n2+1):
             if np.allclose(img[i:i+m2, j:j+n2], tmp, rtol=0, atol=3):
-            # if np.all(img[i:i+m2, j:j+n2] == tmp):
+                # if np.all(img[i:i+m2, j:j+n2] == tmp):
                 return (i + m2//2), (j + n2//2)
 
     return -1, -1
@@ -229,14 +230,14 @@ def find_imgs(h):
 
     tmp = Image.open('img/watch_solution.png').convert('RGB')
     t1 = time.time()
-    x,y = template_matching(screen, tmp)
-    print('finding solution image in ', (time.time() - t1), ' x,y= ', x,y)
+    x, y = template_matching(screen, tmp)
+    print('finding solution image in ', (time.time() - t1), ' x,y= ', x, y)
     y = y + h + 170
 
-    return x,y,n
+    return x, y, n
 
 
-def find_idx_of_right_choice(screen):
+def find_idx_of_right_choice(screen: np.array):
     idx = 0
     for ch in ['A', 'B', 'C', 'D', 'E']:
         img = Image.open('img/choice/' + ch + '.png').convert('RGB')

@@ -44,10 +44,9 @@ def start_quiz(quiz_name, quiz_expo):
     pyautogui.press('enter')
     pyautogui.write(quiz_expo)
     pyautogui.press('enter')
-    pyautogui.sleep(SLEEP_DUR)
 
 
-def add_eba_question(question_str, h):
+def add_eba_question(question_str, question_expo, h):
     if len(question_str) > QUESTION_STR_LIMIT:
         print('question str is more than LIMIT', QUESTION_STR_LIMIT)
         return
@@ -62,10 +61,9 @@ def add_eba_question(question_str, h):
         pyautogui.press('enter')
 
     click_2_show_answer()
-    x, y, n = find_imgs(h)
-    copy_solution_url(x, y)
+    n = find_answer_from_screen(h)
 
-    add_expo_to_the_question()
+    add_expo_to_the_question(question_expo)
 
     click_2_choice(n)
     generate_the_question()
@@ -74,7 +72,7 @@ def add_eba_question(question_str, h):
 def set_question_img():
     arr, down = get_question_region(0, True)
     img2 = Image.fromarray(arr)
-    img2.save('question.png')
+    img2.save('img/question.png')
     send_to_clipboard(img2)
     pyautogui.click(MAIN_INP_HIGHER_POS.x, MAIN_INP_HIGHER_POS.y)
     pyautogui.hotkey('ctrl', 'v')
@@ -86,7 +84,7 @@ def set_question_img():
 
 def get_question_region(h=0, is_get_down_idx=False):
     """ returns a np array which contains the bounding box on question screen """
-    img = pyautogui.screenshot(region=(4, 170+h, 742, 1166-h))
+    img = pyautogui.screenshot(region=(4, 170+h, 736, 1160-h))
     return get_bounding_box(img, 3, is_get_down_idx)
 
 
@@ -153,10 +151,17 @@ def get_bounding_box(img, white_margin=3, is_get_down_idx=False):
     return arr[up:down, left:right, :]
 
 
-def add_eba_quiz(quiz_name, quiz_expo):
+def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
     start_quiz(quiz_name, quiz_expo)
-    down = set_question_img()
-    add_eba_question('___________________', down)
+
+    for i in range(1, question_cnt + 1):
+        t1 = time.time()
+        question_expo = quiz_name + str(i) + '. soru'
+        down = set_question_img()
+        add_eba_question('___________________', question_expo, down)
+        click_2_show_answer()
+        click_2_next_question()
+        print('time to add a question: ', (time.time() - t1))
 
 
 def click_2_choice(c):
@@ -165,9 +170,10 @@ def click_2_choice(c):
     pyautogui.click(x, y)
 
 
-def add_expo_to_the_question():
+def add_expo_to_the_question(question_expo):
     pyautogui.click(1787, 1085)
-    pyautogui.hotkey('ctrl', 'v')
+    pyautogui.write(question_expo)
+    pyautogui.press('enter')
 
 
 def generate_the_question():
@@ -178,6 +184,10 @@ def generate_the_question():
 def click_2_show_answer():
     pyautogui.click(785, 1367)
     pyautogui.sleep(SLEEP_DUR)
+
+
+def click_2_next_question():
+    pyautogui.click(715, 1367)
     pyautogui.sleep(SLEEP_DUR)
 
 
@@ -211,7 +221,7 @@ def template_matching(img: np.array, tmp: Image):
     m2, n2, _ = tmp.shape
 
     # search from bottom
-    for i in reversed(range(m-m2+1)):
+    for i in (range(m-m2+1)):
         for j in range(n-n2+1):
             if np.allclose(img[i:i+m2, j:j+n2], tmp, rtol=0, atol=3):
                 # if np.all(img[i:i+m2, j:j+n2] == tmp):
@@ -220,21 +230,15 @@ def template_matching(img: np.array, tmp: Image):
     return -1, -1
 
 
-def find_imgs(h):
-    """ returns x,y,n. x,y are coordinates of 'watch solution button', n is 0 based index of right choice """
+def find_answer_from_screen(h):
+    """ returns index of right choice, h is the height answer appears """
     screen = get_question_region(h)
-    Image.fromarray(screen).save('answer.png')
+    Image.fromarray(screen).save('img/answer.png')
     t1 = time.time()
     n = find_idx_of_right_choice(screen)
     print('finding index of right choice in ', (time.time() - t1))
 
-    tmp = Image.open('img/watch_solution.png').convert('RGB')
-    t1 = time.time()
-    x, y = template_matching(screen, tmp)
-    print('finding solution image in ', (time.time() - t1), ' x,y= ', x, y)
-    y = y + h + 170
-
-    return x, y, n
+    return n
 
 
 def find_idx_of_right_choice(screen: np.array):
@@ -261,29 +265,8 @@ def print_mouse_position():
             print('position: ', curr_pos)
 
 
-# add_question()
-
-# #ikinci şık doğruysa
-# pyautogui.click(1290, 483)
-
-# #üçüncü şık doğruysa
-# pyautogui.click(1290, 526)
-
-# #dörcüncü şık doğruysa
-# pyautogui.click(1290, 570)
-# #beşinci şık doğruysa
-# pyautogui.click(1290, 605)
-
-# SORUYU OLUŞTUR
-# pyautogui.click(1570, 1000)
-
-
-# pyautogui.click(1580, 1010)
-
-
 # print_mouse_position()
 add_turkish_chars()
-add_eba_quiz('1. TYT Denemesi - Türkçe', 'https://akademikdestek.eba.gov.tr/')
+add_eba_quiz('EBA Akademik Destek 1. TYT Denemesi - Türkçe', 'Türkçe', 40)
 
-# find_imgs(0,0)
-# start_quiz('RG9uJ3QgZm9yZ2V0IHRoYXQgz4AgPSAzLjE0ICYgZG9lc24ndCBlcXVhbCAzLg==', 'expo')
+# find_answer_from_screen(300)

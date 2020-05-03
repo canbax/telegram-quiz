@@ -156,12 +156,24 @@ def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
 
     for i in range(1, question_cnt + 1):
         t1 = time.time()
-        question_expo = quiz_name + str(i) + '. soru'
+        question_expo = quiz_name + ' ' + str(i) + '. soru'
         down = set_question_img()
         add_eba_question('___________________', question_expo, down)
         click_2_show_answer()
         click_2_next_question()
         print('time to add a question: ', (time.time() - t1))
+    end_the_quiz()
+    pyautogui.sleep(SLEEP_DUR)
+    if 'AYT' in quiz_name:
+        click_2_3min()
+    else:
+        click_2_1min()
+    pyautogui.sleep(SLEEP_DUR)
+
+    click_2_no_shuffle()
+    pyautogui.sleep(SLEEP_DUR)
+
+    click_2_yes()
 
 
 def click_2_choice(c):
@@ -254,6 +266,28 @@ def find_idx_of_right_choice(screen: np.array):
     return -1
 
 
+def end_the_quiz():
+    pyautogui.click(MAIN_INP_HIGHER_POS.x, MAIN_INP_HIGHER_POS.y)
+    pyautogui.write('/done')
+    pyautogui.press('enter')
+
+
+def click_2_1min():
+    pyautogui.click(1714, 1368)
+
+
+def click_2_3min():
+    pyautogui.click(2048, 1368)
+
+
+def click_2_no_shuffle():
+    pyautogui.click(2248, 1320)
+
+
+def click_2_yes():
+    pyautogui.click(1752, 1370)
+
+
 def print_mouse_position():
     prev_pos = pyautogui.Point(0, 0)
     curr_pos = pyautogui.Point(0, 0)
@@ -267,7 +301,11 @@ def print_mouse_position():
 
 # print_mouse_position()
 add_turkish_chars()
-add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
+add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Türkçe', 'Türkçe', 40)
+# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Fen Bilimleri', 'Fen', 40)
+# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Matematik','Matematik', 40)
+# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Sosyal Bilimler-2', 'Sosyal', 46)
+# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Sosyal Bilimler-2', 'Sosyal', 46)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
 
 # find_answer_from_screen(300)

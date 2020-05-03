@@ -16,7 +16,7 @@ CREATE_THE_QUESTION_BTN = pyautogui.Point(2043, 1366)
 QUESTION_OPTION_HEIGHT = 40
 QUESTION_LINE_HEIGHT = 10
 
-SLEEP_DUR = 1
+SLEEP_DUR = 0.25
 solution_start_height = -1
 
 
@@ -52,7 +52,7 @@ def add_eba_question(question_str, question_expo, h):
         return
 
     pyautogui.click(CREATE_A_QUESTION_BTN.x, CREATE_A_QUESTION_BTN.y)
-    pyautogui.sleep(SLEEP_DUR)
+    pyautogui.sleep(SLEEP_DUR * 2)
     pyautogui.write(question_str)
     pyautogui.press('enter')
 
@@ -188,7 +188,7 @@ def click_2_show_answer():
 
 def click_2_next_question():
     pyautogui.click(715, 1367)
-    pyautogui.sleep(SLEEP_DUR)
+    pyautogui.sleep(SLEEP_DUR * 4)
 
 
 def copy_solution_url(x, y):
@@ -267,6 +267,7 @@ def print_mouse_position():
 
 # print_mouse_position()
 add_turkish_chars()
-add_eba_quiz('EBA Akademik Destek 1. TYT Denemesi - Türkçe', 'Türkçe', 40)
+add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
+# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
 
 # find_answer_from_screen(300)

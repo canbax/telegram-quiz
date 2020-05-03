@@ -4,6 +4,7 @@ from PIL import Image
 from io import BytesIO
 import win32clipboard
 import time
+import winsound
 
 QUESTION_STR_LIMIT = 255
 QUESTION_LINE_LIMIT = 40
@@ -300,8 +301,21 @@ def print_mouse_position():
 
 
 # print_mouse_position()
-add_turkish_chars()
-add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Türkçe', 'Türkçe', 40)
+try:
+    add_turkish_chars()
+    add_eba_quiz(
+        'EBA Akademik Destek 3. TYT Denemesi - Fen Bilimleri', 'Fen', 20)
+except:
+    frequency = 1500  # Set Frequency To 2500 Hertz
+    duration = 3000  # Set Duration To 1000 ms == 1 second
+    winsound.Beep(frequency, duration)
+finally:
+    frequency = 2500  # Set Frequency To 2500 Hertz
+    duration = 3000  # Set Duration To 1000 ms == 1 second
+    winsound.Beep(frequency, duration)
+
+
+# add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Sosyal Bilimler', 'Sosyal', 25)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Fen Bilimleri', 'Fen', 40)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Matematik','Matematik', 40)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Sosyal Bilimler-2', 'Sosyal', 46)

@@ -47,7 +47,7 @@ def start_quiz(quiz_name, quiz_expo):
     pyautogui.press('enter')
 
 
-def add_eba_question(question_str, question_expo, h):
+def add_eba_question(question_str, h):
     if len(question_str) > QUESTION_STR_LIMIT:
         print('question str is more than LIMIT', QUESTION_STR_LIMIT)
         return
@@ -62,9 +62,9 @@ def add_eba_question(question_str, question_expo, h):
         pyautogui.press('enter')
 
     click_2_show_answer()
-    n = find_answer_from_screen(h)
+    x, y, n = find_answer_from_screen(h)
 
-    add_expo_to_the_question(question_expo)
+    add_expo_to_the_question(x, y)
 
     click_2_choice(n)
     generate_the_question()
@@ -155,11 +155,10 @@ def get_bounding_box(img, white_margin=3, is_get_down_idx=False):
 def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
     start_quiz(quiz_name, quiz_expo)
 
-    for i in range(1, question_cnt + 1):
+    for _ in range(1, question_cnt + 1):
         t1 = time.time()
-        question_expo = quiz_name + ' ' + str(i) + '. soru'
         down = set_question_img()
-        add_eba_question('___________________', question_expo, down)
+        add_eba_question('___________________', down)
         click_2_show_answer()
         click_2_next_question()
         print('time to add a question: ', (time.time() - t1))
@@ -183,7 +182,11 @@ def click_2_choice(c):
     pyautogui.click(x, y)
 
 
-def add_expo_to_the_question(question_expo):
+def add_expo_to_the_question(x, y):
+
+    copy_solution_url(x, y)
+
+    question_expo = ''
     pyautogui.click(1787, 1085)
     pyautogui.write(question_expo)
     pyautogui.press('enter')
@@ -204,6 +207,30 @@ def click_2_next_question():
     pyautogui.sleep(SLEEP_DUR * 4)
 
 
+def click_2_second_telegram_chat():
+    pyautogui.click(1400, 170)
+    pyautogui.sleep(SLEEP_DUR)
+
+
+def click_2_first_telegram_chat():
+    pyautogui.click(1400, 100)
+    pyautogui.sleep(SLEEP_DUR)
+
+
+def click_2_attact_2_telegram_chat():
+    pyautogui.click(1563, 1370)
+    pyautogui.sleep(SLEEP_DUR)
+
+def click_2_last_video_on_telegram_chat():
+    pyautogui.click(1770, 1200, button='right')
+    pyautogui.sleep(SLEEP_DUR)
+
+def click_2_copy_url_on_telegram_chat():
+    pyautogui.click(1843, 1075, button='right')
+    pyautogui.sleep(SLEEP_DUR)
+
+
+
 def copy_solution_url(x, y):
     # clear dev tools network tab
     pyautogui.click(1089, 153)
@@ -217,12 +244,16 @@ def copy_solution_url(x, y):
     pyautogui.click(1079, 400, button='right')
     pyautogui.sleep(SLEEP_DUR)
 
-    # click to HTTP request > copy
-    pyautogui.click(1167, 506)
+    # click to "open in new tab"
+    pyautogui.click(1149, 410)
     pyautogui.sleep(SLEEP_DUR)
 
-    # click to HTTP request > copy > link address
-    pyautogui.click(1400, 510)
+    # click to "open in new tab"
+    pyautogui.click(1255, 1064)
+    pyautogui.sleep(SLEEP_DUR)
+
+    # click to "open in new tab"
+    pyautogui.click(1169, 1008)
     pyautogui.sleep(SLEEP_DUR)
 
 
@@ -251,7 +282,14 @@ def find_answer_from_screen(h):
     n = find_idx_of_right_choice(screen)
     print('finding index of right choice in ', (time.time() - t1))
 
-    return n
+    t1 = time.time()
+    img = Image.open('img/watch_solution.png').convert('RGB')
+    img.load()
+    x, y = template_matching(screen, img)
+    print('finding watch solution button in image ', (time.time() - t1))
+    y = y + 80
+
+    return x, y, n
 
 
 def find_idx_of_right_choice(screen: np.array):
@@ -300,21 +338,21 @@ def print_mouse_position():
             print('position: ', curr_pos)
 
 
-# print_mouse_position()
+print_mouse_position()
 try:
     add_turkish_chars()
     add_eba_quiz(
-        'EBA Akademik Destek 3. TYT Denemesi - Fen Bilimleri', 'Fen', 20)
+        'EBA Akademik Destek 3. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
-    duration = 3000  # Set Duration To 1000 ms == 1 second
+    duration = 1000  # Set Duration To 1000 ms == 1 second
     winsound.Beep(frequency, duration)
 finally:
     frequency = 2500  # Set Frequency To 2500 Hertz
-    duration = 3000  # Set Duration To 1000 ms == 1 second
+    duration = 1000  # Set Duration To 1000 ms == 1 second
     winsound.Beep(frequency, duration)
 
-
+# add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Fen Bilimleri', 'Fen', 20)
 # add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Sosyal Bilimler', 'Sosyal', 25)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Fen Bilimleri', 'Fen', 40)
 # add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Matematik','Matematik', 40)

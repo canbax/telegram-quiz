@@ -226,7 +226,7 @@ def click_2_last_video_on_telegram_chat():
     pyautogui.sleep(SLEEP_DUR)
 
 def click_2_copy_url_on_telegram_chat():
-    pyautogui.click(1843, 1075, button='right')
+    pyautogui.click(1843, 1075)
     pyautogui.sleep(SLEEP_DUR)
 
 

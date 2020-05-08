@@ -16,6 +16,7 @@ CREATE_A_QUESTION_BTN = pyautogui.Point(2043, 1366)
 CREATE_THE_QUESTION_BTN = pyautogui.Point(2043, 1366)
 QUESTION_OPTION_HEIGHT = 40
 QUESTION_LINE_HEIGHT = 10
+QUESTION_TOP_LEFT = pyautogui.Point(4, 170)
 
 SLEEP_DUR = 0.25
 solution_start_height = -1
@@ -47,11 +48,18 @@ def start_quiz(quiz_name, quiz_expo):
     pyautogui.press('enter')
 
 
-def add_eba_question(question_str, h):
+def add_eba_question(question_str, h, quiz_name, question_num):
     if len(question_str) > QUESTION_STR_LIMIT:
         print('question str is more than LIMIT', QUESTION_STR_LIMIT)
         return
 
+    click_2_show_answer()
+    x, y, n = find_answer_from_screen(h)
+
+    copy_solution_url(x, y, quiz_name, question_num)
+
+    click_2_show_answer()
+    click_2_first_telegram_chat()
     pyautogui.click(CREATE_A_QUESTION_BTN.x, CREATE_A_QUESTION_BTN.y)
     pyautogui.sleep(SLEEP_DUR * 2)
     pyautogui.write(question_str)
@@ -61,10 +69,7 @@ def add_eba_question(question_str, h):
         pyautogui.write(ch)
         pyautogui.press('enter')
 
-    click_2_show_answer()
-    x, y, n = find_answer_from_screen(h)
-
-    add_expo_to_the_question(x, y)
+    add_expo_to_the_question()
 
     click_2_choice(n)
     generate_the_question()
@@ -85,7 +90,8 @@ def set_question_img():
 
 def get_question_region(h=0, is_get_down_idx=False):
     """ returns a np array which contains the bounding box on question screen """
-    img = pyautogui.screenshot(region=(4, 170+h, 736, 1160-h))
+    r = (QUESTION_TOP_LEFT.x, QUESTION_TOP_LEFT.y + h, 736, 1160-h)
+    img = pyautogui.screenshot(region=r)
     return get_bounding_box(img, 3, is_get_down_idx)
 
 
@@ -155,11 +161,10 @@ def get_bounding_box(img, white_margin=3, is_get_down_idx=False):
 def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
     start_quiz(quiz_name, quiz_expo)
 
-    for _ in range(1, question_cnt + 1):
+    for i in range(1, question_cnt + 1):
         t1 = time.time()
         down = set_question_img()
-        add_eba_question('___________________', down)
-        click_2_show_answer()
+        add_eba_question('___________________', down, quiz_name, i)
         click_2_next_question()
         print('time to add a question: ', (time.time() - t1))
     end_the_quiz()
@@ -182,18 +187,15 @@ def click_2_choice(c):
     pyautogui.click(x, y)
 
 
-def add_expo_to_the_question(x, y):
-
-    copy_solution_url(x, y)
-
-    question_expo = ''
+def add_expo_to_the_question():
     pyautogui.click(1787, 1085)
-    pyautogui.write(question_expo)
+    pyautogui.write('çözüm videosu: ')
+    pyautogui.hotkey('ctrl', 'v')
     pyautogui.press('enter')
 
 
 def generate_the_question():
-    pyautogui.click(2053, 1207)
+    pyautogui.click(2053, 1180)
     pyautogui.sleep(SLEEP_DUR)
 
 
@@ -217,21 +219,30 @@ def click_2_first_telegram_chat():
     pyautogui.sleep(SLEEP_DUR)
 
 
-def click_2_attact_2_telegram_chat():
+def click_2_attach_2_telegram_chat(file_name):
     pyautogui.click(1563, 1370)
     pyautogui.sleep(SLEEP_DUR)
+
+    pyautogui.write(file_name)
+    pyautogui.press('enter')
+    pyautogui.sleep(SLEEP_DUR) 
+
+    # add an explanation to the video
+    pyautogui.write(file_name)
+    pyautogui.press('enter')
+
 
 def click_2_last_video_on_telegram_chat():
     pyautogui.click(1770, 1200, button='right')
     pyautogui.sleep(SLEEP_DUR)
+
 
 def click_2_copy_url_on_telegram_chat():
     pyautogui.click(1843, 1075)
     pyautogui.sleep(SLEEP_DUR)
 
 
-
-def copy_solution_url(x, y):
+def copy_solution_url(x, y, quiz_name, question_num):
     # clear dev tools network tab
     pyautogui.click(1089, 153)
     pyautogui.sleep(SLEEP_DUR)
@@ -246,15 +257,36 @@ def copy_solution_url(x, y):
 
     # click to "open in new tab"
     pyautogui.click(1149, 410)
-    pyautogui.sleep(SLEEP_DUR)
+    # loading video might take time
+    pyautogui.sleep(7)
 
-    # click to "open in new tab"
+    # click to choices for video
     pyautogui.click(1255, 1064)
     pyautogui.sleep(SLEEP_DUR)
 
-    # click to "open in new tab"
+    # click to download video
     pyautogui.click(1169, 1008)
     pyautogui.sleep(SLEEP_DUR)
+
+    # enter file name
+    file_name = quiz_name + ' ' + str(question_num) + '. soru.mp4'
+    pyautogui.write(file_name)
+    pyautogui.press('enter')
+    pyautogui.sleep(2)  # download video might take too much time
+
+    # close video tab in browser
+    pyautogui.hotkey('ctrl', 'w')
+
+    # close download bar on browser
+    pyautogui.click(1259, 1361)
+    pyautogui.sleep(SLEEP_DUR)
+
+    click_2_second_telegram_chat()
+    click_2_attach_2_telegram_chat(file_name)
+    # wait for video upload    
+    pyautogui.sleep(30)
+    click_2_last_video_on_telegram_chat()
+    click_2_copy_url_on_telegram_chat()
 
 
 def template_matching(img: np.array, tmp: Image):
@@ -287,8 +319,8 @@ def find_answer_from_screen(h):
     img.load()
     x, y = template_matching(screen, img)
     print('finding watch solution button in image ', (time.time() - t1))
-    y = y + 80
-
+    y = y + h + QUESTION_TOP_LEFT.y - 15
+    x = x + QUESTION_TOP_LEFT.x
     return x, y, n
 
 
@@ -338,7 +370,7 @@ def print_mouse_position():
             print('position: ', curr_pos)
 
 
-print_mouse_position()
+# print_mouse_position()
 try:
     add_turkish_chars()
     add_eba_quiz(

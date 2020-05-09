@@ -18,7 +18,7 @@ QUESTION_OPTION_HEIGHT = 40
 QUESTION_LINE_HEIGHT = 10
 QUESTION_TOP_LEFT = pyautogui.Point(4, 170)
 
-SLEEP_DUR = 0.25
+SLEEP_DUR = 0.5
 solution_start_height = -1
 
 
@@ -59,7 +59,11 @@ def add_eba_question(question_str, h, quiz_name, question_num):
     copy_solution_url(x, y, quiz_name, question_num)
 
     click_2_show_answer()
-    click_2_first_telegram_chat()
+
+    # click to first telegram chat on telegram desktop
+    pyautogui.click(1400, 100)
+    pyautogui.sleep(SLEEP_DUR)
+
     pyautogui.click(CREATE_A_QUESTION_BTN.x, CREATE_A_QUESTION_BTN.y)
     pyautogui.sleep(SLEEP_DUR * 2)
     pyautogui.write(question_str)
@@ -209,36 +213,8 @@ def click_2_next_question():
     pyautogui.sleep(SLEEP_DUR * 4)
 
 
-def click_2_second_telegram_chat():
-    pyautogui.click(1400, 170)
-    pyautogui.sleep(SLEEP_DUR)
-
-
 def click_2_first_telegram_chat():
     pyautogui.click(1400, 100)
-    pyautogui.sleep(SLEEP_DUR)
-
-
-def click_2_attach_2_telegram_chat(file_name):
-    pyautogui.click(1563, 1370)
-    pyautogui.sleep(SLEEP_DUR)
-
-    pyautogui.write(file_name)
-    pyautogui.press('enter')
-    pyautogui.sleep(SLEEP_DUR) 
-
-    # add an explanation to the video
-    pyautogui.write(file_name)
-    pyautogui.press('enter')
-
-
-def click_2_last_video_on_telegram_chat():
-    pyautogui.click(1770, 1200, button='right')
-    pyautogui.sleep(SLEEP_DUR)
-
-
-def click_2_copy_url_on_telegram_chat():
-    pyautogui.click(1843, 1075)
     pyautogui.sleep(SLEEP_DUR)
 
 
@@ -272,7 +248,7 @@ def copy_solution_url(x, y, quiz_name, question_num):
     file_name = quiz_name + ' ' + str(question_num) + '. soru.mp4'
     pyautogui.write(file_name)
     pyautogui.press('enter')
-    pyautogui.sleep(2)  # download video might take too much time
+    pyautogui.sleep(SLEEP_DUR * 4)  # file system does not work instant
 
     # close video tab in browser
     pyautogui.hotkey('ctrl', 'w')
@@ -281,12 +257,37 @@ def copy_solution_url(x, y, quiz_name, question_num):
     pyautogui.click(1259, 1361)
     pyautogui.sleep(SLEEP_DUR)
 
-    click_2_second_telegram_chat()
-    click_2_attach_2_telegram_chat(file_name)
-    # wait for video upload    
+    # click to second telegram chat on telegram desktop
+    pyautogui.click(1400, 170)
+    pyautogui.sleep(SLEEP_DUR)
+
+    # click to attach file
+    pyautogui.click(1563, 1370)
+    pyautogui.sleep(SLEEP_DUR)
+    print('after click to attach file ')
+
+    # enter file name
+    pyautogui.write(file_name)
+    pyautogui.press('enter')
+    pyautogui.sleep(SLEEP_DUR)
+
+    print('after file name')
+
+    # add an calption to the video
+    pyautogui.write(file_name[0:-4])
+    pyautogui.press('enter')
+
+    print('wait for video upload after adding caption to video')
+    # wait for video upload
     pyautogui.sleep(30)
-    click_2_last_video_on_telegram_chat()
-    click_2_copy_url_on_telegram_chat()
+    # click to last item (which is a video) on telegram chat
+    pyautogui.click(1770, 1200, button='right')
+    pyautogui.sleep(SLEEP_DUR)
+
+    print('after click 2 last video on telegram')
+    # copy URL of video on telegram chat
+    pyautogui.click(1843, 1075)
+    pyautogui.sleep(SLEEP_DUR)
 
 
 def template_matching(img: np.array, tmp: Image):

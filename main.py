@@ -218,6 +218,32 @@ def click_2_first_telegram_chat():
     pyautogui.sleep(SLEEP_DUR)
 
 
+def wait4_video_on_new_tab():
+    r = (1270, 400, 1, 1)
+    while True:
+        img = pyautogui.screenshot(region=r)
+        img = np.array(img)
+        if np.all(img == np.array([255, 255, 255])):
+            return
+        else:
+            pyautogui.sleep(SLEEP_DUR)
+
+
+def wait4_video_upload2_telegram():
+  # 2036 1340
+    r = (1992, 1302, 44, 44)
+    while True:
+        img = pyautogui.screenshot(region=r)
+        img = np.array(img)
+        tmp = Image.open('img/telegram_share_icon.png').convert('RGB')
+        tmp.load()
+        x, _ = template_matching(img, tmp)
+        if x == -1:
+            pyautogui.sleep(SLEEP_DUR)
+        else:
+            return
+
+
 def copy_solution_url(x, y, quiz_name, question_num):
     # clear dev tools network tab
     pyautogui.click(1089, 153)
@@ -234,7 +260,8 @@ def copy_solution_url(x, y, quiz_name, question_num):
     # click to "open in new tab"
     pyautogui.click(1149, 410)
     # loading video might take time
-    pyautogui.sleep(7)
+    # pyautogui.sleep(7)
+    wait4_video_on_new_tab()
 
     # click to choices for video
     pyautogui.click(1255, 1064)
@@ -242,7 +269,7 @@ def copy_solution_url(x, y, quiz_name, question_num):
 
     # click to download video
     pyautogui.click(1169, 1008)
-    pyautogui.sleep(SLEEP_DUR)
+    pyautogui.sleep(SLEEP_DUR * 4)
 
     # enter file name
     file_name = quiz_name + ' ' + str(question_num) + '. soru.mp4'
@@ -264,22 +291,24 @@ def copy_solution_url(x, y, quiz_name, question_num):
     # click to attach file
     pyautogui.click(1563, 1370)
     pyautogui.sleep(SLEEP_DUR)
-    print('after click to attach file ')
+    print('after click to attach file with file name: ' + str(file_name))
 
     # enter file name
     pyautogui.write(file_name)
     pyautogui.press('enter')
-    pyautogui.sleep(SLEEP_DUR)
+    pyautogui.sleep(SLEEP_DUR * 4)   # file system does not work instant
 
     print('after file name')
 
-    # add an calption to the video
+    # add a caption to the video
     pyautogui.write(file_name[0:-4])
     pyautogui.press('enter')
+    pyautogui.sleep(SLEEP_DUR)
 
     print('wait for video upload after adding caption to video')
     # wait for video upload
-    pyautogui.sleep(30)
+    # pyautogui.sleep(30)
+    wait4_video_upload2_telegram()
     # click to last item (which is a video) on telegram chat
     pyautogui.click(1770, 1200, button='right')
     pyautogui.sleep(SLEEP_DUR)

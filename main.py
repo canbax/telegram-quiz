@@ -275,7 +275,7 @@ def copy_solution_url(x, y, quiz_name, question_num):
 
     # enter file name
     file_name = quiz_name + ' ' + str(question_num) + '. soru.mp4'
-    pyautogui.write(file_name)
+    pyautogui.write(file_name, interval=0.01)
     pyautogui.press('enter')
     pyautogui.sleep(SLEEP_DUR * 4)  # file system does not work instant
 
@@ -295,12 +295,12 @@ def copy_solution_url(x, y, quiz_name, question_num):
     pyautogui.sleep(SLEEP_DUR*2)
 
     # enter file name
-    pyautogui.write(file_name)
+    pyautogui.write(file_name, interval=0.01)
     pyautogui.press('enter')
-    pyautogui.sleep(SLEEP_DUR * 4)   # file system does not work instant
+    pyautogui.sleep(SLEEP_DUR * 5)   # file system does not work instant
 
     # add a caption to the video
-    pyautogui.write(file_name[0:-4])
+    pyautogui.write(file_name[0:-4], interval=0.01)
     pyautogui.press('enter')
     pyautogui.sleep(SLEEP_DUR)
 
@@ -400,8 +400,8 @@ def print_mouse_position():
 # print_mouse_position()
 try:
     add_turkish_chars()
-    add_eba_quiz('EBA 1. TYT Denemesi - Temel Matematik',
-                 'Video çözümlü EBA Akademik Destek testleri', 1, 40, True)
+    add_eba_quiz('EBA 1. AYT Denemesi - Matematik',
+                 'Video çözümlü EBA Akademik Destek testleri', 19, 40, False)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second

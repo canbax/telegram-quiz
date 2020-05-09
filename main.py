@@ -162,15 +162,16 @@ def get_bounding_box(img, white_margin=3, is_get_down_idx=False):
     return arr[up:down, left:right, :]
 
 
-def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
-    start_quiz(quiz_name, quiz_expo)
+def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True):
+    if is_start_quiz:
+        start_quiz(quiz_name, quiz_expo)
 
-    for i in range(1, question_cnt + 1):
-        t1 = time.time()
+    t1 = time.time()
+    for i in range(qnum_start, qnum_end + 1):
         down = set_question_img()
         add_eba_question('___________________', down, quiz_name, i)
         click_2_next_question()
-        print('time to add a question: ', (time.time() - t1))
+    print('time to add all questions: ', (time.time() - t1))
     end_the_quiz()
     pyautogui.sleep(SLEEP_DUR)
     if 'AYT' in quiz_name:
@@ -183,6 +184,7 @@ def add_eba_quiz(quiz_name, quiz_expo, question_cnt):
     pyautogui.sleep(SLEEP_DUR)
 
     click_2_yes()
+    pyautogui.sleep(SLEEP_DUR)
 
 
 def click_2_choice(c):
@@ -290,22 +292,18 @@ def copy_solution_url(x, y, quiz_name, question_num):
 
     # click to attach file
     pyautogui.click(1563, 1370)
-    pyautogui.sleep(SLEEP_DUR)
-    print('after click to attach file with file name: ' + str(file_name))
+    pyautogui.sleep(SLEEP_DUR*2)
 
     # enter file name
     pyautogui.write(file_name)
     pyautogui.press('enter')
     pyautogui.sleep(SLEEP_DUR * 4)   # file system does not work instant
 
-    print('after file name')
-
     # add a caption to the video
     pyautogui.write(file_name[0:-4])
     pyautogui.press('enter')
     pyautogui.sleep(SLEEP_DUR)
 
-    print('wait for video upload after adding caption to video')
     # wait for video upload
     # pyautogui.sleep(30)
     wait4_video_upload2_telegram()
@@ -313,7 +311,6 @@ def copy_solution_url(x, y, quiz_name, question_num):
     pyautogui.click(1770, 1200, button='right')
     pyautogui.sleep(SLEEP_DUR)
 
-    print('after click 2 last video on telegram')
     # copy URL of video on telegram chat
     pyautogui.click(1843, 1075)
     pyautogui.sleep(SLEEP_DUR)
@@ -403,8 +400,8 @@ def print_mouse_position():
 # print_mouse_position()
 try:
     add_turkish_chars()
-    add_eba_quiz(
-        'EBA Akademik Destek 3. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
+    add_eba_quiz('EBA 1. TYT Denemesi - Temel Matematik',
+                 'Video çözümlü EBA Akademik Destek testleri', 1, 40, True)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second
@@ -413,13 +410,3 @@ finally:
     frequency = 2500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second
     winsound.Beep(frequency, duration)
-
-# add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Fen Bilimleri', 'Fen', 20)
-# add_eba_quiz('EBA Akademik Destek 3. TYT Denemesi - Sosyal Bilimler', 'Sosyal', 25)
-# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Fen Bilimleri', 'Fen', 40)
-# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Matematik','Matematik', 40)
-# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Sosyal Bilimler-2', 'Sosyal', 46)
-# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Sosyal Bilimler-2', 'Sosyal', 46)
-# add_eba_quiz('EBA Akademik Destek 2. AYT Denemesi - Türk Dili ve Edebiyatı-Sosyal Bilimler-1', 'Türkçe-Sosyal', 40)
-
-# find_answer_from_screen(300)

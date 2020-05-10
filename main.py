@@ -169,7 +169,8 @@ def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True,
     t1 = time.time()
     for i in range(qnum_start, qnum_end + 1):
         down = set_question_img()
-        add_eba_question('___________________', down, quiz_name, i, is_need2_download)
+        add_eba_question('___________________', down,
+                         quiz_name, i, is_need2_download)
         click_2_next_question()
     print('time to add all questions: ', (time.time() - t1))
     end_the_quiz()
@@ -249,7 +250,7 @@ def wait4_video_on_new_tab():
 
 def wait4_video_upload2_telegram():
   # 2036 1340
-    r = (1992, 1302, 44, 44)
+    r = (1972, 1302, 64, 44)
     while True:
         img = pyautogui.screenshot(region=r)
         img = np.array(img)
@@ -419,8 +420,8 @@ def print_mouse_position():
 # print_mouse_position()
 try:
     add_turkish_chars()
-    add_eba_quiz('EBA 3. TYT Denemesi - Matematik',
-                 'Video çözümlü EBA Akademik Destek testleri', 1, 40, True, True)
+    add_eba_quiz('EBA 3. AYT Denemesi - Sosyal 2  ',
+                 'Video çözümlü EBA Akademik Destek testleri', 40, 46, False, False)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second

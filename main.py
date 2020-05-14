@@ -420,9 +420,9 @@ def print_mouse_position():
 # print_mouse_position()
 try:
     add_turkish_chars()
-    add_eba_quiz('EBA 5. TYT Denemesi - Matematik',
-                 'Video çözümlü EBA Akademik Destek testleri', 3, 40, False,
-                 True, True)
+    title = 'EBA 5. TYT Denemesi - Fen'
+    expo = 'Video çözümlü EBA Akademik Destek testleri'
+    add_eba_quiz(title, expo, 1, 20, True, True, True)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second

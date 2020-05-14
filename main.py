@@ -162,7 +162,7 @@ def get_bounding_box(img, white_margin=3, is_get_down_idx=False):
     return arr[up:down, left:right, :]
 
 
-def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True, is_need2_download=True):
+def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True, is_need2_download=True, is_end_quiz=True):
     if is_start_quiz:
         start_quiz(quiz_name, quiz_expo)
 
@@ -173,6 +173,9 @@ def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True,
                          quiz_name, i, is_need2_download)
         click_2_next_question()
     print('time to add all questions: ', (time.time() - t1))
+    if not is_end_quiz:
+        return
+
     end_the_quiz()
     pyautogui.sleep(SLEEP_DUR)
     if 'AYT' in quiz_name:
@@ -184,8 +187,9 @@ def add_eba_quiz(quiz_name, quiz_expo, qnum_start, qnum_end, is_start_quiz=True,
     click_2_no_shuffle()
     pyautogui.sleep(SLEEP_DUR)
 
-    click_2_yes()
+    pyautogui.write('Yes', interval=0.01)
     pyautogui.sleep(SLEEP_DUR)
+    pyautogui.press('enter')
 
     pyautogui.write('Other language', interval=0.01)
     pyautogui.sleep(SLEEP_DUR)
@@ -402,10 +406,6 @@ def click_2_no_shuffle():
     pyautogui.click(2248, 1320)
 
 
-def click_2_yes():
-    pyautogui.click(1752, 1370)
-
-
 def print_mouse_position():
     prev_pos = pyautogui.Point(0, 0)
     curr_pos = pyautogui.Point(0, 0)
@@ -420,8 +420,9 @@ def print_mouse_position():
 # print_mouse_position()
 try:
     add_turkish_chars()
-    add_eba_quiz('EBA 3. AYT Denemesi - Sosyal 2  ',
-                 'Video çözümlü EBA Akademik Destek testleri', 40, 46, False, False)
+    add_eba_quiz('EBA 5. TYT Denemesi - Matematik',
+                 'Video çözümlü EBA Akademik Destek testleri', 3, 40, False,
+                 True, True)
 except:
     frequency = 1500  # Set Frequency To 2500 Hertz
     duration = 1000  # Set Duration To 1000 ms == 1 second
